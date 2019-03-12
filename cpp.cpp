@@ -1,27 +1,42 @@
 #include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
+#include <cmath>
 
 using namespace std;
 
 int main() {
 
-	vector<string> str;
+	double N = 0;
+	double A = 0;
+	double B = 0;
+	double X = 0;
+	double Y = 0;
 
-	string a(30, ' ');
-	string b(30, ' ');
-	string c(30, ' ');
+	double total_cost = 0;
 
-	cin >> a >> b >> c;
+	cin >> N >> A >> B >> X >> Y;
 
-	str.push_back(a);
-	str.push_back(b);
-	str.push_back(c);
+	if(A <= B){
 
-	sort(str.begin(), str.end());
+		// Скидка 0
+		if (N <= A) {
+			total_cost = N;
+			cout << total_cost;
+		}
 
-	cout << str[0];
+		// Скидка X%
+		if (N > A && N <= B){
+			total_cost = N - (N*X)/100;
+			cout << total_cost;
+		}
+
+		// Скидка Y%
+		if (N > B){
+			total_cost = N - (N*Y)/100;
+			cout << total_cost;
+		}
+
+	}
 
 	return 0;
 }
+
