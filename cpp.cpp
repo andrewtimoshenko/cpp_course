@@ -1,7 +1,9 @@
 #include <string>
 #include <iostream>
 #include <vector>
+
 using namespace std;
+
 void Next_month(int& index,const vector<int>& diy, vector<vector<string>>& tfd) { //создает следующий месяц и переносит дела
     index++; // берем индекс следующего месяца
     if (index > 11)index = 0; //если индекс стал > 11(т.е. 12) то начинаем год с начала
