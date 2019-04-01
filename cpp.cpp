@@ -1,127 +1,53 @@
+#include <string>
 #include <iostream>
-#include <cmath>
 #include <vector>
-#include <algorithm>
-
 using namespace std;
-
-//enum {                      Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec } current_month;
-uint8_t current_month = 0;
-
-uint8_t days_in_month[12] = {31,  28,  31,  30,  31,  30,  31,  31,  30,  31,  30, 31};
-
-int count_words(string& s){
-
-	int words = 0;
-
-	for (auto i: s){
-		if (isspace(i)){
-			words++;
-		}
-	}
-
-	return ++words;
+void Next_month(int& index,const vector<int>& diy, vector<vector<string>>& tfd) { //создает следующий месяц и переносит дела
+    index++; // берем индекс следующего месяца
+    if (index > 11)index = 0; //если индекс стал > 11(т.е. 12) то начинаем год с начала
+    vector<vector<string>> NewMonth = tfd; //новый вектор и копируем в него старый
+    int a = tfd.size(); //посчитаем размер старого вектора
+    int b = diy[index]; //и размер нового вектора
+    tfd.resize(b); //и меняем размер(обрезаем или дописываем пустые значения)
+    const int e = b - 1; // переменная для определения индекса последнего дня в новом месяце
+    if (a > b) { //если старый больше нового, то
+        for (b; a > b; b++) { //перебираем все дни, которые не влезли с прошлого месяца
+            tfd[e].insert(end(tfd[e]), begin(NewMonth[b]), end(NewMonth[b])); //все задачи из дня старого месяца дописываем в конец последнего дня нового месяца
+        }
+    }
+    NewMonth.clear(); //очищаем новый вектор
 }
-
-int main() {
-
-	uint32_t Q = 0;
-	uint32_t day = 0;
-	uint32_t size = 0;
-	string business;
-	string str;
-	vector<string> schedule(31);
-//	vector<string> schedule = {"one", "two", "three"};
-//
-//	cout << schedule.size() << ": ";
-//	for (auto s: schedule){
-//		cout << s << endl;
-//	}
-//
-//	schedule.resize(2);
-//
-//	cout << schedule.size() << ": ";
-//	for (auto s: schedule){
-//		cout << s << endl;
-//	}
-
-
-	cin >> Q;
-
-	for (uint32_t i = 0; i < Q; i++) {
-
-		cin >> str;
-
-		if (str == "ADD") {
-
-			cin >> day;
-
-			if ( day > 0 && day <= days_in_month[current_month] ){ // day for current month
-				cin >> business;
-				if (business != ""){
-					// add some business... check whether elements for businesses
-					if (schedule[day - 1] != ""){
-						schedule[day - 1] += ' ' + business;
-					} else {
-						schedule[day - 1] = business;
-					}
-
-				}
-			}
-
-		} else if (str == "NEXT"){
-			// Next bigger than current
-			if (days_in_month[current_month + 1] > days_in_month[current_month]){
-				schedule.resize(days_in_month[current_month + 1], "");
-			} else { // Next less than current
-
-				int diff_days = days_in_month[current_month] - days_in_month[current_month + 1];
-
-				for (int _day = days_in_month[current_month + 1] + 1; _day <= days_in_month[current_month]; _day++ ){
-					if (schedule[_day - 1] != ""){ // день для переноса не пустой
-						if (schedule[days_in_month[current_month + 1] - 1] != ""){ // день куда переносим не пустой
-							schedule[days_in_month[current_month + 1] - 1] += " " + schedule[_day - 1];
-						} else{ // пустой - просто пишем
-							schedule[days_in_month[current_month + 1] - 1] = schedule[_day - 1];
-//							cout << schedule[_day - 1] << " from " << _day - 1 << " to " << days_in_month[current_month + 1] - 1 << endl;
-//							cout << "current has: " << (int)days_in_month[current_month] << " days" << endl;
-//							cout << "next has: " << (int)days_in_month[current_month + 1] << endl;
-						}
-					}
-				}
-				schedule.resize(days_in_month[current_month + 1], "");
-//				cout << "size: " << schedule.size() << endl;
-			}
-
-			if(current_month < 11){
-				current_month++;
-			} else if (current_month == 11){
-				current_month = 0;
-			}
-
-		} else if (str == "DUMP"){
-			cin >> day;
-			if ( day > 0 && days_in_month[current_month] ){
-				size = schedule.size();
-				if (schedule[day - 1] != ""){
-					cout << count_words(schedule[day - 1]) << ' ' << schedule[day - 1] << endl;
-				} else{
-					cout << "0" << endl;
-				}
-			}
-		} else if (str == "PRINT"){
-			cout << "schedule: " << endl;
-			for (uint32_t k = 0; k < schedule.size(); k++){
-				if (schedule[k] != ""){
-					cout << k + 1 << ". " << schedule[k] << endl;
-				}
-			}
-		}
-
-		day = 0;
-		business = "";
-	}
-
-	return 0;
+void Task_display(int day, const vector<vector<string>>& tfd) { // вывод задач в определенный день
+    cout << tfd[day - 1].size();
+    for (auto i : tfd[day - 1]){ //перебираем все задачи в конкретном дне
+        cout << " " << i; //и выводим через пробел
+    }
 }
-
+int main()
+{
+    int Q;
+    cin >> Q; //ввели количество операций
+    vector<int> day_in_year = { 31,28,31,30,31,30,31,31,30,31,30,31}; //явно указываем сколько дней в каждом месяце
+    vector<vector<string>> task_for_day; //создаем новый вектор для задач в каждом дне месяца
+    int index_of_month = 0; //переменная для определения индекса текущего месяца
+    task_for_day.resize(day_in_year[index_of_month], {}); //увеличиваем вектор до количества дней в текущем месяце
+    for (int i = 0; Q > i; i++) { //и пока лимит операций (Q) не закончится считываем их и выполняем по ходу
+        string comand; //команда
+        int day; //день месяца
+        string task; //задача на день
+        cin >> comand; //прочитали команду...
+        if (comand == "NEXT") { //если это запрос "перейти на другой месяц" ...
+            Next_month(index_of_month, day_in_year, task_for_day); //переходим в функции
+        }
+        else if (comand == "DUMP") { //если команда "показать задачи в определенном дне", то
+            cin >> day; //считываем день
+            Task_display(day,task_for_day); //показываем задачи
+            cout << endl;
+        }
+        else if (comand == "ADD") { //если команда "добавить задачу в день", то
+            cin >> day >> task; //считываем день и задачу
+            task_for_day[day - 1].push_back(task); //в нужный день вставляем задачу в конец дня
+        }
+    }
+    return 0;
+}
