@@ -18,10 +18,32 @@ int main() {
 	string stop;
 	int stop_count = 0;
 
-	map<string, vector<string>> bus_stop_m;
-//	map<string, vector<string>> stop_bus_m;
+	map <string, vector<string>> bus_stop_m =
+	{
+	   {"b2", {"s2", "s1", "s3"}},
+	   {"b3", {"s1", "s2", "s3"}},
+	   {"b1", {"s1", "s2", "s3"}}
+	};
 
-	vector <string> v = {"first", "second"};
+	for (auto key: bus_stop_m){
+		cout << key.first << ": ";
+		for (auto value: key.second){
+			cout << value << " ";
+		}
+		cout << endl;
+	}
+
+	cout << endl;
+	auto it = bus_stop_m.end();
+	it--;
+	for (it; it != bus_stop_m.begin(); ){
+		cout << it->first << ": ";
+		for (auto value: it->second){
+			cout << value << " ";
+		}
+		cout << endl;
+		it--;
+	}
 
 	cin >> Q;
 
@@ -37,6 +59,7 @@ int main() {
 				cin >> str;
 				bus_stop_m[bus].push_back(str);
 			}
+
 
 		} else if (operation == "BUSES_FOR_STOP") {
 			uint8_t stop_exist = 0;
@@ -56,35 +79,40 @@ int main() {
 
 		} else if (operation == "STOPS_FOR_BUS") {
 			uint8_t interchange = 0;
-			uint8_t bus_exist  = 0;
 
 			cin >> bus;
-//			auto it = bus_stop_m.begin(); // TODO: отказаться от обращения [], сделать поиск через find
-			// проверить на простых примерах
-			// NEW_BUS 1 5 q w e r t
-			// STOPS_FOR_BUS 2
-			// ALL_BUSES
+/*
+4
+NEW_BUS b2 3 s2 s1 s3
+NEW_BUS b3 3 s1 s2 s3
+NEW_BUS b1 3 s1 s2 s3
+STOPS_FOR_BUS b2
 
-			for (auto s: bus_stop_m[bus]){
-
-				bus_exist = 1;
-				interchange = 0;
-				cout << "Stop " << s << ": ";
-				for (auto b: bus_stop_m){
-					for (auto st: b.second){
-						if (st == s && b.first != bus){
-							cout << b.first << " ";
-							interchange = 1;
+Stop s2: b3 b1
+Stop s1: b3 b1
+Stop s3: b3 b1
+ */
+			auto it = bus_stop_m.find(bus);
+			// Если автобус существует
+			if (it != bus_stop_m.cend()) {
+				for(auto s: it->second){
+					cout << "Stop " << s << ": ";
+					for ( auto b: bus_stop_m ){ // TODO: сделать обратный перебор автобусов
+						for ( auto st: b.second ){
+							if (st == s && b.first != bus ){
+								cout << b.first << " ";
+								interchange = 1;
+							}
 						}
 					}
+					if (interchange == 0){
+						cout << "no interchange";
+					} else{
+						interchange = 0;
+					}
+					cout << endl;
 				}
-
-			if (interchange == 0){
-				cout << "no interchange";
-			}
-				cout << endl;
-			}
-			if (bus_exist == 0){
+			} else {
 				cout << "No bus" << endl;
 			}
 
