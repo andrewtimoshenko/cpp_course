@@ -6,29 +6,30 @@
 
 using namespace std;
 
+set<string> BuildMapValuesSet(const map<int, string>& m) {
+
+	set<string> s;
+
+	for (auto& item: m){
+		s.insert(item.second);
+	}
+
+	return s;
+}
 
 int main() {
-    int q;
-    cin >> q;
 
-    set <string> str_s;
+	set<string> values = BuildMapValuesSet({
+	    {1, "odd"},
+	    {2, "even"},
+	    {3, "odd"},
+	    {4, "even"},
+	    {5, "odd"}
+	});
 
-    for (int i = 0; i < q; ++i) {
-
-    	string str;
-    	cin >> str;
-
-    	str_s.insert(str);
-    }
-
-    int i = 0;
-    for (auto item: str_s) {
-    	if (str_s.count(item) == 1){
-    		++i;
-    	}
-    }
-
-    cout << i;
+	for (const string& value : values) {
+	  cout << value << endl;
+	}
 
     return 0;
 }
