@@ -2,33 +2,33 @@
 
 #include <iostream>
 #include <string>
-#include <set>
-#include <map>
+#include <vector>
+#include <algorithm>
+#include <cmath>
 
 using namespace std;
 
 int main() {
-  int q;
-  cin >> q;
 
-  map<set<string>, int> buses;
+  // считываем вектор
+  int n;
+  cin >> n;
+  vector<int> v(n);
+  for (int& x : v) {
+    cin >> x;
+  }
 
-  for (int i = 0; i < q; ++i) {
-    int n;
-    cin >> n;
-    set<string> stops;
-    for (int j = 0; j < n; ++j) {
-      string stop;
-      cin >> stop;
-      stops.insert(stop);
-    }
-    if (buses.count(stops) == 0) {
-      const int new_number = buses.size() + 1;
-      buses[stops] = new_number;
-      cout << "New bus " << new_number << endl;
-    } else {
-      cout << "Already exists for " << buses[stops] << endl;
-    }
+  // сортируем
+  sort(begin(v), end(v),
+       // функция, сравнивающая abs(l) и abs(r) — модули чисел l и r
+       [](int l, int r) {
+         return abs(l) < abs(r);
+       }
+  );
+
+  // выводим отсорированный вектор
+  for (int x : v) {
+    cout << x << " ";
   }
 
   return 0;

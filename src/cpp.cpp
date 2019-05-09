@@ -1,39 +1,45 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <algorithm>
+#include <vector>
 #include <set>
 
 using namespace std;
 
 int main() {
-  int q;
-  cin >> q;
-  int route_cntr = 1;
+  int n;
+  cin >> n;
   /*
    * Не нужно ничего усложнять!
    * Просто нужно использовать те вещи, которые дали в уроках
    * и не придумывать лишнего!
    */
+  vector <int> array;
+  if (n >= 0 && n <= 1000){
+	  for (int i = 0; i < n; ++i) {
+		  int x;
+		  cin >> x;
+		  array.push_back(x);
+		  if (x >= -1000000 && x <= 1000000){
+		  } else {
+			  return 1;
+		  }
+	  }
+  } else {
+	  return 1;
+  }
 
-  map <set<string>, int> routes_m;
+  sort(array.begin(), array.end(), [](int a, int b){
+	  if (abs(a) < abs(b)){
+		  return true;
+	  } else {
+		  return false;
+	  }
+  });
 
-  for (int i = 0; i < q; ++i) {
-    int stops_number = 0;
-    cin >> stops_number;
-
-    set <string> names;
-    for (int n = 0; n < stops_number; n++){
-    	string stop_name;
-    	cin >> stop_name;
-    	names.insert(stop_name);
-    }
-    if (routes_m.find(names) != routes_m.end()){
-    	cout << "Already exists for " << routes_m[names] << endl;
-    } else {
-        routes_m[names] = route_cntr;
-        cout << "New bus " << routes_m[names] << endl;
-        route_cntr++;
-    }
+  for (auto i: array){
+	  cout << i << ' ';
   }
 
   return 0;
